@@ -276,8 +276,19 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  for (let i = 1; i < arr.length; i += 1) {
+    let left = 0;
+    let right = 0;
+    for (let j = 0; j < i; j += 1) {
+      left += arr[j];
+    }
+    for (let x = i + 1; x < arr.length; x += 1) {
+      right += arr[x];
+    }
+    if (left === right) return i;
+  }
+  return -1;
 }
 
 /**
@@ -301,8 +312,51 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const arr = [];
+  let i = 1;
+  for (let x = 0; x < size; x += 1) {
+    arr[x] = [];
+    for (let y = 0; y < size; y += 1) {
+      arr[x][y] = 0;
+    }
+  }
+  function move(arrow, currentx, currenty) {
+    if (i > size ** 2) return;
+    arr[currentx][currenty] = i;
+    i += 1;
+
+    if (arrow === 'right') {
+      if (arr[currentx]?.[currenty + 1] !== 0) {
+        move('bottom', currentx + 1, currenty);
+      } else {
+        move('right', currentx, currenty + 1);
+      }
+    }
+    if (arrow === 'bottom') {
+      if (arr[currentx + 1]?.[currenty] !== 0) {
+        move('left', currentx, currenty - 1);
+      } else {
+        move('bottom', currentx + 1, currenty);
+      }
+    }
+    if (arrow === 'left') {
+      if (arr[currentx]?.[currenty - 1] !== 0) {
+        move('top', currentx - 1, currenty);
+      } else {
+        move('left', currentx, currenty - 1);
+      }
+    }
+    if (arrow === 'top') {
+      if (arr[currentx - 1]?.[currenty] !== 0) {
+        move('right', currentx, currenty + 1);
+      } else {
+        move('top', currentx - 1, currenty);
+      }
+    }
+  }
+  move('right', 0, 0);
+  return arr;
 }
 
 /**
@@ -320,8 +374,22 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const big = matrix;
+  const result = [];
+  for (let x = 0; x < matrix.length; x += 1) {
+    result[x] = [];
+    for (let y = 0; y < matrix[x].length; y += 1) {
+      result[x][y] = matrix[x][y];
+    }
+  }
+
+  for (let i = 0; i < result.length; i += 1) {
+    for (let j = 0; j < result[i].length; j += 1) {
+      big[j][result[i].length - 1 - i] = result[i][j];
+    }
+  }
+  return big;
 }
 
 /**
@@ -338,8 +406,18 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(array) {
+  const arr = array;
+  let j;
+  let max;
+  for (let i = 1; i < arr.length; i += 1) {
+    max = arr[i];
+    for (j = i; j > 0 && arr[j - 1] > max; j -= 1) {
+      arr[j] = arr[j - 1];
+    }
+    arr[j] = max;
+  }
+  return arr;
 }
 
 /**
@@ -359,8 +437,22 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let count = iterations;
+  let left = '';
+  let right = '';
+  let strin = str;
+  while (count > 0) {
+    for (let i = 0, j = 1; i < strin.length; i += 2, j += 2) {
+      right += strin[j];
+      left += strin[i];
+    }
+    strin = left + right;
+    left = '';
+    right = '';
+    count -= 1;
+  }
+  return strin;
 }
 
 /**
@@ -380,8 +472,32 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let min;
+  let count = 100;
+  const symbols = [];
+  const arr = [...`${number}`];
+
+  function getNumber(array) {
+    for (let i = 0, sym; i < array.length; i += 1) {
+      [sym] = array.splice(i, 1);
+      symbols.push(sym);
+      if (array.length === 0) {
+        const num = +symbols.join('');
+        if (num > number) {
+          if (!min) min = num;
+          count -= 1;
+          if (count <= 0) return;
+          min = Math.min(num, min);
+        }
+      }
+      getNumber(array);
+      array.splice(i, 0, sym);
+      symbols.pop();
+    }
+  }
+  getNumber(arr);
+  return min;
 }
 
 module.exports = {
