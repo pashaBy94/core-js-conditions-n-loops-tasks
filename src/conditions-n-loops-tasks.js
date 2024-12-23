@@ -439,8 +439,8 @@ function sortByAsc(array) {
  */
 function shuffleChar(str, iterations) {
   let count = iterations;
-  let left = '';
-  let right = '';
+  let left = '',
+    right = '';
   let strin = str;
   while (count > 0) {
     for (let i = 0, j = 1; i < strin.length; i += 2, j += 2) {
